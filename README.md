@@ -49,86 +49,69 @@ sudo chmod -R 755 .
 
 ### 2. Configuración de Nginx
 
-Utiliza la configuración optimizada incluida en `nginx.conf`. Para un despliegue estándar en Ubuntu, crea un archivo en `/etc/nginx/sites-available/verter-frontend`.
+Utiliza la configuración optimizada incluida en `nginx.conf`. Ejecuta el siguiente comando para crear y editar el archivo de sitio en tu VPS:
+
+```bash
+sudo nano /etc/nginx/sites-available/verter-frontend
+```
+
+**Pega el siguiente contenido y ajusta tu dominio y rutas:**
 
 #### Contenido recomendado (Ajusta los paths):
 
+> [!NOTE]
+> No incluyas las directivas globales `user`, `http`, etc. en este archivo, ya que Nginx las gestiona en el archivo principal.
+
 ```nginx
-# Nginx Configuration for VerterVpn Frontend
-# Optimized for High Performance and Security
+# Rate Limiting - Anti-DoS (Opcional: puedes mover esto a /etc/nginx/nginx.conf)
+limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+limit_conn_zone $binary_remote_addr zone=addr:10m;
 
-user  nginx;
-worker_processes  auto;
-error_log  /var/log/nginx/error.log warn;
-pid        /var/log/nginx/nginx.pid;
+server {
+    listen 80;
+    server_name vpn.tu-dominio.com; # <--- TU DOMINIO AQUÍ
 
-events {
-    worker_connections  2048;
-    multi_accept on;
-    use epoll;
-}
+    root /var/www/verter-vpn/dist; # Ruta a tu carpeta dist
+    index index.html;
 
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-    # Basic Settings
-    sendfile        on;
-    tcp_nopush      on;
-    tcp_nodelay     on;
-    keepalive_timeout  65;
-    types_hash_max_size 2048;
-    server_tokens off;
-
-    # Gzip Compression
+    # Gzip (Si no está activo globalmente)
     gzip on;
-    gzip_vary on;
-    gzip_proxied any;
-    gzip_comp_level 6;
-    gzip_buffers 16 8k;
-    gzip_http_version 1.1;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_types text/plain text/css application/json application/javascript text/xml;
 
-    # Rate Limiting (Anti-DoS)
-    limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
-    limit_conn_zone $binary_remote_addr zone=addr:10m;
+    # Security Headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    server {
-        listen 80;
-        server_name vpn.tu-dominio.com; # Reemplaza por tu dominio real
+    # SPA Routing
+    location / {
+        limit_req zone=one burst=20 nodelay;
+        limit_conn addr 10;
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+    }
 
-        root /var/www/verter-vpn/dist; # Ruta recomendada para producción
-        index index.html;
+    # Cache Assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|otf)$ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform";
+        access_log off;
+        log_not_found off;
+    }
 
-        # Security Headers
-        add_header X-Frame-Options "SAMEORIGIN" always;
-        add_header X-XSS-Protection "1; mode=block" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header Referrer-Policy "no-referrer-when-downgrade" always;
-        add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    # Health Check
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+    }
 
-        # SPA Routing
-        location / {
-            limit_req zone=one burst=20 nodelay;
-            limit_conn addr 10;
-            try_files $uri $uri/ /index.html;
-            add_header Cache-Control "no-store, no-cache, must-revalidate";
-        }
-
-        # Cache Static Assets (Vite hashes filenames)
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|otf)$ {
-            expires 1y;
-            add_header Cache-Control "public, no-transform";
-            access_log off;
-            log_not_found off;
-        }
-
-        # Health Check
-        location /health {
-            access_log off;
-            return 200 "healthy\n";
-        }
+    # Error Pages
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
     }
 }
 ```
