@@ -1,0 +1,34 @@
+import type { Plan } from "../types/plan";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v1";
+
+export const apiService = {
+  /**
+   * Obtiene la lista de planes activos desde el backend.
+   */
+  async getPlans(): Promise<Plan[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/plans`);
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      const data = await response.json();
+      // Ordenar por sort_order
+      return (data as Plan[]).sort((a, b) => a.sort_order - b.sort_order);
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Obtiene un plan específico por su slug.
+   */
+  async getPlanBySlug(slug: string): Promise<Plan> {
+    const response = await fetch(`${API_BASE_URL}/plans/slug/${slug}`);
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    return response.json();
+  }
+};
