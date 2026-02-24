@@ -4,6 +4,7 @@ import { CheckCircle2, Activity } from "lucide-react";
 const services = [
   { name: "Control Plane", status: "Operational", uptime: "99.99%", latency: "24ms" },
   { name: "Global Mesh Network", status: "Operational", uptime: "100%", latency: "15ms" },
+  { name: "SSL/TLS Cerificates", status: "Operational", uptime: "100%", latency: "Valid" },
   { name: "API Gateway", status: "Operational", uptime: "99.95%", latency: "12ms" },
   { name: "Authentication Service", status: "Operational", uptime: "100%", latency: "8ms" },
 ];

@@ -63,6 +63,17 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+### 4. Configuración SSL (Certbot)
+
+Para un servicio profesional, es obligatorio usar HTTPS. Recomendamos **Certbot** (Let's Encrypt):
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d vpn.tu-dominio.com
+```
+
+Certbot configurará automáticamente la redirección de HTTP a HTTPS y añadirá los certificados a tu archivo de Nginx.
+
 ## 🛡️ Estándares de Código
 
 Este proyecto utiliza un sistema de linting riguroso para garantizar la calidad del código:
