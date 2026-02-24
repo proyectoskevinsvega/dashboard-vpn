@@ -78,5 +78,30 @@ export const apiService = {
       console.error("Error fetching contact info:", error);
       throw error;
     }
+  },
+
+  /**
+   * Envía el formulario de contacto al backend.
+   */
+  async submitContactForm(data: { name: string; email: string; subject: string; message: string }): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Error HTTP: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      throw error;
+    }
   }
 };

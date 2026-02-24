@@ -22,6 +22,15 @@ interface ContactInfo {
 const Contact = () => {
   const [contact, setContact] = useState<ContactInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  
+  // Estados para el formulario
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: 'Soporte Técnico',
+    message: ''
+  });
 
   useEffect(() => {
     const fetchContact = async () => {
@@ -37,9 +46,23 @@ const Contact = () => {
     fetchContact();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Mensaje enviado con éxito. Nos pondremos en contacto contigo pronto.");
+    setSubmitting(true);
+    try {
+      await apiService.submitContactForm(formData);
+      alert("Mensaje enviado con éxito. Nos pondremos en contacto contigo pronto.");
+      setFormData({
+        name: '',
+        email: '',
+        subject: 'Soporte Técnico',
+        message: ''
+      });
+    } catch (error: any) {
+      alert("Error al enviar el mensaje: " + (error.message || "Inténtalo de nuevo más tarde."));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const getIcon = (iconName: string) => {
@@ -175,6 +198,8 @@ const Contact = () => {
                   <input
                     type="text"
                     required
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="Tu nombre"
                     className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
                   />
@@ -184,6 +209,8 @@ const Contact = () => {
                   <input
                     type="email"
                     required
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="tu@email.com"
                     className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
                   />
@@ -191,7 +218,11 @@ const Contact = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-foreground/40 px-1">Asunto</label>
-                <select className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm appearance-none">
+                <select 
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm appearance-none"
+                >
                   <option className="bg-background">Soporte Técnico</option>
                   <option className="bg-background">Ventas y Planes</option>
                   <option className="bg-background">Reporte de Errores</option>
@@ -203,16 +234,28 @@ const Contact = () => {
                 <textarea
                   required
                   rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
                   placeholder="¿Cómo podemos ayudarte?"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-2xl font-bold transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
+                disabled={submitting}
+                className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-2xl font-bold transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Enviar Mensaje
-                <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                {submitting ? (
+                  <>
+                    Enviando...
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Enviar Mensaje
+                    <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </>
+                )}
               </button>
             </form>
           </motion.div>
