@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Server, Globe, Shield, Activity, Zap } from "lucide-react";
+import { CheckCircle2, Activity } from "lucide-react";
 
 const services = [
   { name: "Control Plane", status: "Operational", uptime: "99.99%", latency: "24ms" },
