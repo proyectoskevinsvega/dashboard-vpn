@@ -30,5 +30,21 @@ export const apiService = {
       throw new Error(`Error HTTP: ${response.status}`);
     }
     return response.json();
+  },
+
+  /**
+   * Obtiene la política de privacidad desde el backend.
+   */
+  async getPrivacyPolicy(): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/privacy`);
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching privacy policy:", error);
+      throw error;
+    }
   }
 };

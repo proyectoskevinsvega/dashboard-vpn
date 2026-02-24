@@ -1,73 +1,133 @@
 import { motion } from "framer-motion";
-import { Shield, Lock, EyeOff, FileText, Globe, Key } from "lucide-react";
+import { Shield, Lock, Key, EyeOff, Globe, FileText, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiService } from "../lib/api";
+
+interface PrivacySection {
+  id: string;
+  section_type: 'header' | 'benefit' | 'article' | 'footer';
+  title: string;
+  content: string;
+  icon: string;
+}
+
+interface PrivacyPolicy {
+  header: PrivacySection;
+  benefits: PrivacySection[];
+  articles: PrivacySection[];
+  footer: PrivacySection;
+}
 
 const Privacy = () => {
+  const [policy, setPolicy] = useState<PrivacyPolicy | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrivacy = async () => {
+      try {
+        const data = await apiService.getPrivacyPolicy();
+        setPolicy(data);
+      } catch (error) {
+        console.error("Error fetching privacy policy:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrivacy();
+  }, []);
+
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Shield': return <Shield className="w-8 h-8 text-primary" />;
+      case 'Lock': return <Lock className="w-8 h-8 text-primary" />;
+      case 'Key': return <Key className="w-8 h-8 text-primary" />;
+      case 'EyeOff': return <EyeOff className="w-8 h-8 text-primary" />;
+      case 'Globe': return <Globe className="w-5 h-5 text-primary" />;
+      case 'FileText': return <FileText className="w-5 h-5 text-primary" />;
+      default: return null;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (!policy) return null;
+
   return (
     <div className="pt-24 min-h-screen bg-background">
+      {/* Hero Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto space-y-16">
           <header className="text-center space-y-6">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <Shield className="w-10 h-10" />
+              <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight">
+                {policy.header.title.split(' ')[0]} <span className="text-gradient">{policy.header.title.split(' ').slice(1).join(' ')}</span>
+              </h1>
+              <p className="mt-6 text-foreground/50 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                {policy.header.content}
+              </p>
             </motion.div>
-            <h1 className="text-5xl font-display font-bold">Política de <span className="text-gradient">Privacidad</span></h1>
-            <p className="text-foreground/50 text-lg">Tu privacidad no es una opción, es nuestro estándar fundamental.</p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-primary mx-auto">
-                <EyeOff className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold">Zero Logs</h3>
-              <p className="text-xs text-foreground/40 leading-relaxed">Nunca registramos tu actividad, destino o tráfico en nuestra red.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-primary mx-auto">
-                <Lock className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold">mTLS 100%</h3>
-              <p className="text-xs text-foreground/40 leading-relaxed">Cada paquete está cifrado de extremo a extremo con certificados únicos.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-primary mx-auto">
-                <Key className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold">Tú tienes la Llave</h3>
-              <p className="text-xs text-foreground/40 leading-relaxed">Ni siquiera nosotros podemos acceder a tu red Mesh privada.</p>
-            </div>
+          {/* Benefits Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {policy.benefits.map((benefit, index) => (
+              <motion.div
+                key={benefit.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="glass p-8 rounded-3xl border border-white/5 space-y-4 hover:border-primary/20 transition-colors"
+              >
+                <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                  {getIcon(benefit.icon)}
+                </div>
+                <h3 className="text-xl font-bold">{benefit.title}</h3>
+                <p className="text-foreground/60 leading-relaxed italic">
+                  "{benefit.content}"
+                </p>
+              </motion.div>
+            ))}
           </div>
 
+          {/* Policy Content */}
           <article className="prose prose-invert max-w-none space-y-12">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold flex items-center gap-3">
-                <FileText className="w-5 h-5 text-primary" />
-                1. Recopilación de Información
-              </h2>
-              <p className="text-foreground/60 leading-relaxed">
-                VerterVpn NO recopila, monitorea ni almacena ningún tipo de registro de navegación, direcciones IP de origen, destinos de tráfico o consultas DNS de sus usuarios.
-              </p>
-            </div>
+            {policy.articles.map((article) => (
+              <div key={article.id} className="space-y-4">
+                <h2 className="text-2xl font-bold flex items-center gap-3">
+                  {getIcon(article.icon)}
+                  {article.title}
+                </h2>
+                <p className="text-foreground/60 leading-relaxed">
+                  {article.content}
+                </p>
+              </div>
+            ))}
 
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold flex items-center gap-3">
-                <Globe className="w-5 h-5 text-primary" />
-                2. Uso de Datos Técnicos
-              </h2>
-              <p className="text-foreground/60 leading-relaxed">
-                Únicamente almacenamos los metadatos necesarios para el funcionamiento de tu cuenta (email y credenciales de autenticación), los cuales están protegidos bajo los más altos estándares de cifrado.
+            {/* Support Box */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-8 glass rounded-3xl border border-dashed border-white/10 text-center space-y-4"
+            >
+              <h3 className="font-bold">{policy.footer.title}</h3>
+              <p className="text-sm text-foreground/50">
+                {policy.footer.content}
               </p>
-            </div>
-
-            <div className="p-8 glass rounded-3xl border border-dashed border-white/10 text-center space-y-4">
-              <h3 className="font-bold">¿Tienes dudas sobre tus datos?</h3>
-              <p className="text-sm text-foreground/50">Estamos comprometidos con la transparencia total. Puedes solicitarnos una auditoría técnica en cualquier momento.</p>
-              <button className="text-primary font-bold hover:underline">privacy@vertervpn.online</button>
-            </div>
+              <button className="text-primary font-bold hover:underline">
+                {policy.footer.icon}
+              </button>
+            </motion.div>
           </article>
         </div>
       </section>
