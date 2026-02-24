@@ -46,5 +46,21 @@ export const apiService = {
       console.error("Error fetching privacy policy:", error);
       throw error;
     }
+  },
+
+  /**
+   * Obtiene los términos de servicio desde el backend.
+   */
+  async getTermsOfService(): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/terms`);
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching terms of service:", error);
+      throw error;
+    }
   }
 };
