@@ -1,11 +1,81 @@
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, Shield, Send, MapPin, Phone, Globe, Twitter, Github } from "lucide-react";
+import { Mail, MessageSquare, Shield, Send, MapPin, Phone, Globe, Twitter, Github, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiService } from "../lib/api";
+
+interface ContactSection {
+  id: string;
+  section_type: 'header' | 'department' | 'info' | 'social';
+  title: string;
+  content: string;
+  icon: string;
+  link: string;
+}
+
+interface ContactInfo {
+  header: ContactSection;
+  departments: ContactSection[];
+  info: ContactSection[];
+  social: ContactSection[];
+}
 
 const Contact = () => {
+  const [contact, setContact] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContact = async () => {
+      try {
+        const data = await apiService.getContactInfo();
+        setContact(data);
+      } catch (error) {
+        console.error("Error loading contact info:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContact();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert("Mensaje enviado con éxito. Nos pondremos en contacto contigo pronto.");
   };
+
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Mail': return <Mail className="w-6 h-6" />;
+      case 'MessageSquare': return <MessageSquare className="w-6 h-6" />;
+      case 'MapPin': return <MapPin className="w-6 h-6" />;
+      case 'Phone': return <Phone className="w-6 h-6" />;
+      case 'Twitter': return <Twitter className="w-5 h-5" />;
+      case 'Github': return <Github className="w-5 h-5" />;
+      case 'Globe': return <Globe className="w-6 h-6" />;
+      case 'Shield': return <Shield className="w-6 h-6" />;
+      case 'Send': return <Send className="w-5 h-5" />;
+      default: return <Mail className="w-6 h-6" />;
+    }
+  };
+
+  const getDepartmentColor = (title: string) => {
+    if (title.toLowerCase().includes('soporte')) return 'bg-secondary/10 text-secondary';
+    return 'bg-primary/10 text-primary';
+  };
+
+  const getDepartmentLinkColor = (title: string) => {
+    if (title.toLowerCase().includes('soporte')) return 'text-secondary';
+    return 'text-primary';
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (!contact) return null;
 
   return (
     <div className="pt-24 min-h-screen bg-background">
@@ -23,13 +93,13 @@ const Contact = () => {
             className="space-y-6"
           >
             <span className="text-primary font-bold uppercase tracking-widest text-sm bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
-              Soporte VerterVpn
+              {contact.header.icon || "Soporte VerterVpn"}
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold">
-              ¿En qué podemos <span className="text-gradient">ayudarte?</span>
+              {contact.header.title.split(' ayuda')[0]} <span className="text-gradient">ayudarte?</span>
             </h1>
             <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
-              Nuestro equipo de expertos en seguridad está disponible 24/7 para resolver tus dudas técnicas.
+              {contact.header.content}
             </p>
           </motion.div>
         </div>
@@ -45,55 +115,43 @@ const Contact = () => {
             className="space-y-12"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="glass p-8 rounded-3xl border border-white/5 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Mail className="w-6 h-6" />
+              {contact.departments.map((dept) => (
+                <div key={dept.id} className="glass p-8 rounded-3xl border border-white/5 space-y-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${getDepartmentColor(dept.title)}`}>
+                    {getIcon(dept.icon)}
+                  </div>
+                  <h3 className="text-xl font-bold">{dept.title}</h3>
+                  <p className="text-foreground/50 text-sm">{dept.content}</p>
+                  <a href={`mailto:${dept.link}`} className={`${getDepartmentLinkColor(dept.title)} font-bold text-sm hover:underline block truncate`}>
+                    {dept.link}
+                  </a>
                 </div>
-                <h3 className="text-xl font-bold">Ventas</h3>
-                <p className="text-foreground/50 text-sm">Para planes corporativos y grandes infraestructuras.</p>
-                <a href="mailto:sales@vertervpn.online" className="text-primary font-bold text-sm hover:underline block">sales@vertervpn.online</a>
-              </div>
-              <div className="glass p-8 rounded-3xl border border-white/5 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
-                  <MessageSquare className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold">Soporte</h3>
-                <p className="text-foreground/50 text-sm">Asistencia técnica para usuarios y despliegues Mesh.</p>
-                <a href="mailto:support@vertervpn.online" className="text-secondary font-bold text-sm hover:underline block">support@vertervpn.online</a>
-              </div>
+              ))}
             </div>
 
             <div className="space-y-8">
               <h2 className="text-3xl font-display font-bold">Conéctate con <span className="text-primary">Nosotros</span></h2>
               <div className="space-y-6">
-                <div className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-foreground/40 group-hover:text-primary transition-colors border border-white/10">
-                    <MapPin className="w-6 h-6" />
+                {contact.info.map((item) => (
+                  <div key={item.id} className="flex items-center gap-6 group">
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-foreground/40 group-hover:text-primary transition-colors border border-white/10">
+                      {getIcon(item.icon)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold">{item.title}</h4>
+                      <p className="text-foreground/50 text-sm">{item.content}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold">Oficinas Globales</h4>
-                    <p className="text-foreground/50 text-sm">Distribuidos globalmente por privacidad.</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-foreground/40 group-hover:text-primary transition-colors border border-white/10">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold">Teléfono</h4>
-                    <p className="text-foreground/50 text-sm">+1 (555) 000-0000 (Soporte VIP)</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
             <div className="flex gap-4">
-              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-primary transition-all border border-white/10">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-primary transition-all border border-white/10">
-                <Github className="w-5 h-5" />
-              </a>
+              {contact.social.map((social) => (
+                <a key={social.id} href={social.link} className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-primary transition-all border border-white/10">
+                  {getIcon(social.icon)}
+                </a>
+              ))}
             </div>
           </motion.div>
 

@@ -62,5 +62,21 @@ export const apiService = {
       console.error("Error fetching terms of service:", error);
       throw error;
     }
+  },
+
+  /**
+   * Obtiene la información de contacto desde el backend.
+   */
+  async getContactInfo(): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact`);
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching contact info:", error);
+      throw error;
+    }
   }
 };
