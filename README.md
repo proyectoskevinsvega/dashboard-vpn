@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# VerterVpn Frontend - Dashboard Premium 🚀🛡️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+VerterVpn es una solución de red mesh de última generación diseñada para ofrecer privacidad total, seguridad mTLS y una experiencia de usuario excepcional. Este repositorio contiene el frontend profesional construido bajo los más altos estándares de desarrollo moderno.
 
-Currently, two official plugins are available:
+## 🚀 Stack Tecnológico
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: React 19 + Vite 7
+- **Lenguaje**: TypeScript (Strict Mode)
+- **Estilos**: Tailwind CSS 4 (Sistema de diseño basado en tokens)
+- **Animaciones**: Framer Motion (Micro-interacciones premium)
+- **Iconografía**: Lucide React
+- **Ruteo**: React Router Dom v7
 
-## React Compiler
+## ✨ Características Principales
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard High-Tech**: Monitoreo de estado del sistema y red mesh en tiempo real.
+- **Navegación Inteligente**: Enlaces absolutos con sistema de scroll suave y limpieza automática de Hash (`#`) para una URL profesional.
+- **Sección de Descargas**: Instaladores dedicados para Windows, macOS, Linux y Dispositivos Móviles.
+- **Centro de Soporte**: Documentación técnica detallada y Centro de Ayuda con FAQ interactivo.
+- **Seguridad**: Integración nativa con políticas de Zero-Logs y cifrado de grado militar.
 
-## Expanding the ESLint configuration
+## 🚀 Guía de Despliegue en VPS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Sigue estos pasos para poner la aplicación en producción de manera profesional.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. Preparación del Entorno
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git pull origin main
+npm install
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configuración de Nginx
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Utiliza la configuración optimizada incluida en `nginx.conf`. Para un despliegue estándar en Ubuntu, crea un archivo en `/etc/nginx/sites-available/verter-frontend`:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```nginx
+server {
+    listen 80;
+    server_name vpn.tu-dominio.com;
+
+    root /home/ubuntu/dashboard-vpn/frontend/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache agresiva para assets estáticos
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform";
+    }
+}
 ```
+
+### 3. Activación
+
+```bash
+sudo ln -s /etc/nginx/sites-available/verter-frontend /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+## 🛡️ Estándares de Código
+
+Este proyecto utiliza un sistema de linting riguroso para garantizar la calidad del código:
+
+- **ESLint**: Configuración avanzada para React y TypeScript.
+- **Prettier**: Formateo de código consistente.
+- **Zero-Unused-Imports**: Todas las importaciones innecesarias son removidas automáticamente para optimizar el bundle.
+
+---
+
+_Desarrollado con ❤️ para el ecosistema VerterVpn_
