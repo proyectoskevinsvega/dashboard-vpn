@@ -89,6 +89,10 @@ http {
     gzip_http_version 1.1;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
+    # Rate Limiting (Anti-DoS)
+    limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+    limit_conn_zone $binary_remote_addr zone=addr:10m;
+
     server {
         listen 80;
         server_name vpn.tu-dominio.com; # Reemplaza por tu dominio real
@@ -106,6 +110,8 @@ http {
 
         # SPA Routing
         location / {
+            limit_req zone=one burst=20 nodelay;
+            limit_conn addr 10;
             try_files $uri $uri/ /index.html;
             add_header Cache-Control "no-store, no-cache, must-revalidate";
         }
@@ -145,5 +151,39 @@ sudo certbot --nginx -d vpn.tu-dominio.com
 ```
 
 Certbot configurará automáticamente la redirección de HTTP a HTTPS y añadirá los certificados a tu archivo de Nginx.
+
+## 🛡️ Seguridad Proactiva (Anti-DDoS)
+
+Si decides no usar Cloudflare para mantener máxima privacidad, debes endurecer el servidor manualmente:
+
+### 1. Nginx Rate Limiting
+
+Nuestra configuración incluye `limit_req`, que restringe a 10 peticiones/seg por IP con ráfagas de 20. Esto frena bots y escaneos automáticos.
+
+### 2. Firewall del Sistema (UFW)
+
+Solo abre los puertos estrictamente necesarios:
+
+```bash
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 22/tcp # Asegúrate de tener acceso SSH
+sudo ufw enable
+```
+
+### 3. Fail2Ban
+
+Instala `fail2ban` para banear automáticamente IPs que intenten ataques de fuerza bruta o realicen demasiadas peticiones sospechosas:
+
+```bash
+sudo apt install fail2ban
+# Configurará por defecto la protección para SSH y Nginx
+```
+
+### 4. Protección de Infraestructura
+
+Si esperas ataques masivos, elige un proveedor de VPS que ofrezca **Mitigación DDoS por Hardware** (como OVH, Hetzner o Voxility). Esto filtra el tráfico sucio antes de que siquiera llegue a tu Nginx.
+
+---
 
 _Desarrollado con ❤️ para el ecosistema VerterVpn_
