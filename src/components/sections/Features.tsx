@@ -1,42 +1,60 @@
 import { motion } from "framer-motion";
-import { Shield, Zap, Globe, Smartphone, Lock, Cpu } from "lucide-react";
+import { Shield, Lock, Smartphone, Globe, QrCode, Network, Star, MonitorSmartphone } from "lucide-react";
 
 const features = [
   {
-    title: "Seguridad Militar",
-    description: "Cifrado AES-256 bits y protocolos de última generación para proteger tus datos.",
-    icon: Shield,
-    className: "md:col-span-2 md:row-span-1",
-  },
-  {
-    title: "Velocidad Ultra",
-    description: "Optimizado para streaming 4K y gaming sin latencia.",
-    icon: Zap,
-    className: "md:col-span-1 md:row-span-1",
-  },
-  {
-    title: "Multi-Dispositivo",
-    description: "Compatible con todos tus equipos.",
-    icon: Smartphone,
-    className: "md:col-span-1 md:row-span-1",
-  },
-  {
-    title: "Red Global",
-    description: "Más de 50 servidores en ubicaciones estratégicas alrededor del mundo.",
+    title: "Infraestructura Global",
+    description: "Acceso a múltiples servidores distribuidos estratégicamente para garantizar baja latencia y alta disponibilidad global.",
     icon: Globe,
-    className: "md:col-span-2 md:row-span-1",
+    className: "md:col-span-2",
   },
   {
-    title: "Detección Inteligente",
-    description: "Conexión automática al servidor más rápido.",
-    icon: Cpu,
-    className: "md:col-span-1 md:row-span-2",
+    title: "Conexión Instantánea",
+    description: "Generación automática de códigos QR para una configuración rápida y segura en cualquier dispositivo móvil.",
+    icon: QrCode,
+    className: "md:col-span-1",
   },
   {
-    title: "Privacidad Garantizada",
-    description: "Política estricta de cero registros. Tus datos son solo tuyos.",
+    title: "Perfiles de Conexión",
+    description: "Guarda tus configuraciones y servidores favoritos para un acceso rápido y personalizado en cada sesión.",
+    icon: Star,
+    className: "md:col-span-1",
+  },
+  {
+    title: "Puertos & Subdominios",
+    description: "Expon tus aplicaciones al mundo con subdominios personalizados y múltiples puertos públicos. Ideal para startups, empresas, devs y programadores.",
+    icon: Network,
+    className: "md:col-span-1",
+  },
+  {
+    title: "Soporte Multiplataforma",
+    description: "Aplicaciones nativas optimizadas para iOS, Android, Windows, macOS y Linux. Seguridad en todos tus equipos.",
+    icon: MonitorSmartphone,
+    className: "md:col-span-1",
+  },
+  {
+    title: "Seguridad Zero Trust",
+    description: "Autenticación mTLS de grado militar, rotación de certificados cada 30 días y revocación instantánea de accesos.",
+    icon: Shield,
+    className: "md:col-span-1",
+  },
+  {
+    title: "Stealth & Anti-DPI",
+    description: "Oculta tu tráfico con WSTunnel, Shadowsocks, Cloak, UDP2Raw y Obfs4 para evadir inspecciones profundas de paquetes.",
+    icon: Shield,
+    className: "md:col-span-2",
+  },
+  {
+    title: "Protección Crítica",
+    description: "Kill Switch endurecido a nivel de IPTables y DNS Leak Protection para garantizar anonimato total del tráfico.",
     icon: Lock,
-    className: "md:col-span-2 md:row-span-1",
+    className: "md:col-span-1",
+  },
+  {
+    title: "Self-Service & Mesh",
+    description: "Panel de autogestión completa y red en malla privada global para interconexión segura entre tus dispositivos.",
+    icon: Smartphone,
+    className: "md:col-span-2",
   },
 ];
 

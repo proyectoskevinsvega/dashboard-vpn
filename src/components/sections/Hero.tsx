@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/Button";
 import { ArrowRight, ShieldCheck, Zap, Lock, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -38,7 +39,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto leading-relaxed"
           >
-            Conéctate de forma segura a cualquier dispositivo, en cualquier lugar. QuantumVPN utiliza tecnología WireGuard con ruteo inteligente y subdominios personalizados.
+            Conéctate de forma segura a cualquier dispositivo, en cualquier lugar. VerterVpn utiliza tecnología WireGuard con ruteo inteligente y subdominios personalizados.
           </motion.p>
 
           {/* CTAs */}
@@ -48,10 +49,14 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button variant="gradient" size="lg" className="group">
-              Pruébalo Gratis <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="glass" size="lg">Ver Planes</Button>
+            <Link to="/register">
+              <Button variant="gradient" size="lg" className="group">
+                Pruébalo Gratis <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/#pricing">
+              <Button variant="glass" size="lg">Ver Planes</Button>
+            </Link>
           </motion.div>
 
           {/* Trust Badges */}

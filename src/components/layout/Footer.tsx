@@ -1,4 +1,5 @@
 import { Shield, Twitter, Github, Linkedin, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -9,7 +10,7 @@ const Footer = () => {
             <div className="flex items-center gap-2">
               <Shield className="w-8 h-8 text-primary" />
               <span className="text-2xl font-display font-bold tracking-tight">
-                Quantum<span className="text-primary">VPN</span>
+                VerterV<span className="text-primary">pn</span>
               </span>
             </div>
             <p className="text-foreground/50 text-sm leading-relaxed">
@@ -31,39 +32,39 @@ const Footer = () => {
           <div className="space-y-6">
             <h4 className="font-bold uppercase tracking-widest text-xs text-foreground/40">Producto</h4>
             <ul className="space-y-4 text-sm text-foreground/60">
-              <li><a href="#features" className="hover:text-primary transition-colors">Características</a></li>
-              <li><a href="#pricing" className="hover:text-primary transition-colors">Planes</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Descargas</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Servidores</a></li>
+              <li><Link to="/#features" className="hover:text-primary transition-colors">Características</Link></li>
+              <li><Link to="/#pricing" className="hover:text-primary transition-colors">Planes</Link></li>
+              <li><Link to="/downloads" className="hover:text-primary transition-colors">Descargas</Link></li>
+              <li><Link to="/#servers" className="hover:text-primary transition-colors">Servidores</Link></li>
             </ul>
           </div>
 
           <div className="space-y-6">
             <h4 className="font-bold uppercase tracking-widest text-xs text-foreground/40">Compañía</h4>
             <ul className="space-y-4 text-sm text-foreground/60">
-              <li><a href="#about" className="hover:text-primary transition-colors">Sobre Nosotros</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Carreras</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contacto</a></li>
+              <li><Link to="/#about" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
+              <li><Link to="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
+              <li><Link to="/careers" className="hover:text-primary transition-colors">Carreras</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contacto</Link></li>
             </ul>
           </div>
 
           <div className="space-y-6">
             <h4 className="font-bold uppercase tracking-widest text-xs text-foreground/40">Soporte</h4>
             <ul className="space-y-4 text-sm text-foreground/60">
-              <li><a href="#" className="hover:text-primary transition-colors">Centro de Ayuda</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Documentación</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacidad</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Términos</a></li>
+              <li><Link to="/help" className="hover:text-primary transition-colors">Centro de Ayuda</Link></li>
+              <li><Link to="/docs" className="hover:text-primary transition-colors">Documentación</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacidad</Link></li>
+              <li><Link to="/terms" className="hover:text-primary transition-colors">Términos</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-foreground/40 text-center">
-          <p>© 2024 QuantumVPN. Todos los derechos reservados.</p>
+          <p>© 2024 VerterVpn. Todos los derechos reservados.</p>
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4" />
-            <span>contacto@quantumvpn.online</span>
+            <span>contacto@vertervpn.online</span>
           </div>
         </div>
       </div>

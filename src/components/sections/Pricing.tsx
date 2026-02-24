@@ -5,6 +5,7 @@ import { Button } from "../ui/Button";
 import { cn } from "../../lib/utils";
 import { apiService } from "../../lib/api";
 import type { Plan } from "../../types/plan";
+import { Link } from "react-router-dom";
 
 const Pricing = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -176,13 +177,15 @@ const Pricing = () => {
                 </div>
 
                 <div className="mt-6 pt-4">
-                  <Button 
-                    variant={isPopular ? "gradient" : "glass"} 
-                    className="w-full text-sm"
-                    size="md"
-                  >
-                    {plan.price_monthly === 0 ? "Comenzar Gratis" : "Adquirir Plan"}
-                  </Button>
+                  <Link to="/register" className="w-full">
+                    <Button 
+                      variant={isPopular ? "gradient" : "glass"} 
+                      className="w-full text-sm"
+                      size="md"
+                    >
+                      {plan.price_monthly === 0 ? "Comenzar Gratis" : "Adquirir Plan"}
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             );

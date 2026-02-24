@@ -13,10 +13,10 @@ const About = () => {
         >
           <h2 className="text-4xl font-display font-bold">Nuestra <span className="text-gradient">Misión</span></h2>
           <p className="text-foreground/70 text-lg leading-relaxed">
-            En QuantumVPN creemos que la libertad digital no es un privilegio, sino un derecho fundamental. Nuestra misión es democratizar el acceso a una red segura y privada mediante tecnología de red mesh descentralizada.
+            En VerterVpn, lideramos la evolución de la conectividad segura mediante arquitecturas de confianza cero (**Zero Trust**). Nuestra misión es proporcionar una infraestructura de red mesh de alto rendimiento que garantice la integridad de los datos y la privacidad absoluta para empresas y usuarios exigentes.
           </p>
           <p className="text-foreground/70 text-lg leading-relaxed">
-            Nacimos de la necesidad de proteger la identidad de activistas, periodistas y usuarios comunes en un mundo cada vez más vigilado. Hoy, conectamos a miles de personas con una infraestructura robusta y amigable.
+            Impulsados por la excelencia técnica, hemos desplegado una red global basada en estándares de seguridad militar y protocolos de ofuscación de última generación. VerterVpn es el estandarte de la conectividad segura en la era de la información distribuida.
           </p>
           
           <div className="grid grid-cols-2 gap-8 pt-8">
