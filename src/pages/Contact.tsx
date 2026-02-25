@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, MessageSquare, Shield, Send, MapPin, Phone, Globe, Twitter, Github, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiService } from "../lib/api";
+import { toast } from "sonner";
 
 interface ContactSection {
   id: string;
@@ -51,7 +52,9 @@ const Contact = () => {
     setSubmitting(true);
     try {
       await apiService.submitContactForm(formData);
-      alert("Mensaje enviado con éxito. Nos pondremos en contacto contigo pronto.");
+      toast.success("¡Mensaje enviado con éxito!", {
+        description: "Nos pondremos en contacto contigo pronto.",
+      });
       setFormData({
         name: '',
         email: '',
@@ -59,7 +62,9 @@ const Contact = () => {
         message: ''
       });
     } catch (error: any) {
-      alert("Error al enviar el mensaje: " + (error.message || "Inténtalo de nuevo más tarde."));
+      toast.error("Error al enviar el mensaje", {
+        description: error.message || "Inténtalo de nuevo más tarde.",
+      });
     } finally {
       setSubmitting(false);
     }

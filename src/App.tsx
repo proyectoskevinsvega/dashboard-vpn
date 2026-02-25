@@ -13,11 +13,13 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Downloads from "./pages/Downloads";
 import ScrollToHash from "./components/layout/ScrollToHash";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <Router>
       <ScrollToHash />
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route 
           path="/" 
