@@ -1,14 +1,51 @@
 import { motion } from "framer-motion";
 import { Shield, Lock, Github, User, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+import { apiService } from "../lib/api";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de registro con la API
-    navigate("/verify-email");
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Las contraseñas no coinciden");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await apiService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      
+      toast.success("Cuenta creada exitosamente", {
+        description: "Por favor, verifica tu correo electrónico para continuar.",
+      });
+      
+      navigate("/verify-email");
+    } catch (error: any) {
+      toast.error(error.message || "Error al crear la cuenta");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,7 +87,10 @@ const Register = () => {
                   </span>
                   <input
                     type="text"
+                    name="name"
                     required
+                    value={formData.name}
+                    onChange={handleChange}
                     className="block w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-foreground placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
                     placeholder="usuario123"
                   />
@@ -64,7 +104,10 @@ const Register = () => {
                   </span>
                   <input
                     type="email"
+                    name="email"
                     required
+                    value={formData.email}
+                    onChange={handleChange}
                     className="block w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-foreground placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
                     placeholder="tu@email.com"
                   />
@@ -81,7 +124,10 @@ const Register = () => {
                   </span>
                   <input
                     type="password"
+                    name="password"
                     required
+                    value={formData.password}
+                    onChange={handleChange}
                     className="block w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-foreground placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
@@ -95,7 +141,10 @@ const Register = () => {
                   </span>
                   <input
                     type="password"
+                    name="confirmPassword"
                     required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
                     className="block w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-foreground placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
@@ -118,9 +167,10 @@ const Register = () => {
 
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-lg shadow-primary/25"
+            disabled={loading}
+            className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Comenzar Ahora
+            {loading ? "Creando Cuenta..." : "Comenzar Ahora"}
           </button>
 
           <div className="relative my-8">

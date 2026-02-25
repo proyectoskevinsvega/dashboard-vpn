@@ -103,5 +103,31 @@ export const apiService = {
       console.error("Error submitting contact form:", error);
       throw error;
     }
+  },
+
+  /**
+   * Registra un nuevo usuario en el sistema.
+   */
+  async register(data: { name: string; email: string; password: string }): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || result.error || "Error al registrarse");
+      }
+
+      return result;
+    } catch (error: any) {
+      console.error("Error during registration:", error);
+      throw error;
+    }
   }
 };
